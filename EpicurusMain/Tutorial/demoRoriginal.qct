@@ -1,0 +1,2 @@
+assume (rollCmd_>0) and (rollCmd_<50) and (yawCmd>0) and (yawCmd_<50) and (roll>0) and (roll<50) and (yaw>0) and (yaw<50);
+not(all_k(k<=99 impl rollCmd2{k}>50));

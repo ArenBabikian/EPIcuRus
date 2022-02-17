@@ -1,0 +1,12 @@
+% This file is part of GP-utils
+% Copyright © [2020] – [2021] University of Luxembourg.
+function root_op = getRootCP(ind,node_index)
+% GETROOTOP takes the individual ind and an array of the node indexes and returns the
+% control point associated with the root functions of the nodes
+    root_op ={};
+    for i=1:size(node_index,2)
+       node=findnode(ind.tree,node_index(i)); 
+       root_op{i}=num2str(node.cp);
+    end
+
+end

@@ -363,7 +363,8 @@ classdef staliro_options
         % Set whether hybrid distance values will be mapped on the real line.
 		%
 		%   Default option : map2line = 1;
-		%
+		n_worker=10;
+        
         %   When using a standard optimization algorithm with the hybrid distance
         %   values, then we need to map the hybrid distance values on the real line using 
         %   the <a href="matlab: web('https://en.wikipedia.org/wiki/Logistic_function')">inverse logit function</a> (see parameter <a href="matlab: doc staliro_options.rob_scale">rob_scale</a>). Setting map2line to 0

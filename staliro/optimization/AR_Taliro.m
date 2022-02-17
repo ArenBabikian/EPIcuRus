@@ -168,7 +168,7 @@ for i = 2:nSamples/opt.n_workers
     % adaptive random generation of cursample
     candidates= zeros(adaptive,nInputs);
     for c= 1 : adaptive
-        for jj = 1:opt.n_workers
+        for jj = 1:opt.n_worker
 %             srand(time(NULL));
             rng('shuffle');
             curSample{jj} = (inpRanges(:,1)-inpRanges(:,2)).*rand(nInputs,1)+inpRanges(:,2);
@@ -190,12 +190,9 @@ for i = 2:nSamples/opt.n_workers
     curSample{1}=curSamples{maxcandindex,:};
 
     % simulate cursample and compute rob
-    disp('Iteration number :');
-    disp(strcat(num2str(run.nTests+1),'/',num2str(nSamples)));
+%     disp('Iteration number :');
+%     disp(strcat(num2str(run.nTests+1),'/',num2str(nSamples)));
     curVal = Compute_Robustness(curSample);
-if curVal{:}<0
-    disp('v');% this is for testing purpose 
-end
     if isa(curVal{1},'hydis')
         [minmax_val, minmax_idx] = minmax(hydisc2m(curVal));
     else

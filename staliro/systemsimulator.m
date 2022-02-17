@@ -80,6 +80,8 @@
 
 %     (C) 2013, Houssam Abbas, Arizona State University
 %     Based upon (now obsolete) Compute_Robustness_Sub.m
+% This file is part of staliro
+% Copyright © [2020] – [2021] University of Luxembourg.
 
 function [hs, rc, sigData] = systemsimulator(inputModel, XPoint, UPoint, staliro_SimulationTime, staliro_InputBounds, nb_ControlPoints, staliro_opt_offline)
 
@@ -331,10 +333,10 @@ elseif strcmp(inputModelType, 'simulink')
 %             for  i = 1:N
 %                 hws.assignin(list(i).name,eval(list(i).name));
 %             end
-timetic=tic;
+% timetic=tic;
             [T, XT, YT] = sim(inputModel, [0 staliro_SimulationTime], simopt, [steptime, InpSignal]);
-oneSimulationTime=toc(timetic);
-disp(['one simulation time:',num2str(oneSimulationTime)]);
+% oneSimulationTime=toc(timetic);
+% disp(['one simulation time:',num2str(oneSimulationTime)]);
         catch ME
             if (strcmp(ME.identifier,'Simulink:Engine:ReturnWkspOutputNotSupported'))
                 msg = sprintf('STaLiRo : Simulink model "%s" outputs to a single variable in the workspace. \nSet the staliro option SimulinkSingleOutput to 1 or modify the Simulink model single object \noutput option at Simulation > Model Configuration > Data Import/Export.',inputModel);

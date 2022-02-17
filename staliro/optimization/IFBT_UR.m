@@ -66,12 +66,9 @@ function [run, history] = IFBT_UR(inpRanges,opt,Oldt,controlPointNames,categoric
 % (C) 2010, Sriram Sankaranarayanan, University of Colorado
 % (C) 2010, Georgios Fainekos, Arizona State University
 % (C) 2019, Shakiba Yaghoubi, Arizona State University
-%modified by:
-% Copyright by University of Luxembourg 2019-2020. 
-% Developed by Khouloud Gaaloul,khouloud.gaaloul@uni.lu University of Luxembourg. 
-% Developed by Claudio Menghi, claudio.menghi@uni.lu University of Luxembourg. 
-% Developed by Shiva Nejati, shiva.nejati@uni.lu University of Luxembourg. 
-% Developed by Lionel Briand,lionel.briand@uni.lu University of Luxembourg. 
+% This file is part of IFBT-UR
+% Copyright © [2020] – [2021] University of Luxembourg.
+
 ranges={};
 assumeRanges={};
 tc=0;
@@ -214,8 +211,8 @@ for oneAssum=1: size(ranges,2)
             curSample{jj} =fOldTC;
 
             % simulate cursample and compute rob
-            disp('Iteration number :');
-            disp(strcat(num2str(run.nTests+1),'/',num2str(nSamples)));
+%             disp('Iteration number :');
+%             disp(strcat(num2str(run.nTests+1),'/',num2str(nSamples)));
             curVal = Compute_Robustness(curSample);
 
             if isa(curVal{1},'hydis')

@@ -1,0 +1,21 @@
+EPIcuRus is © 2021 University of Luxembourg
+and is distributed under the GPL v2 license (read License for details)
+
+Authors:
+  - Khouloud Gaaloul (khouloud.gaaloul@uni.lu)
+  - Claudio Menghi (claudio.menghi@uni.lu)
+  - Shiva Nejati (shiva.nejati@uni.lu)
+  - Lionel Briand (lionel.briand@uni.lu)
+
+Related Papers:
+  - "Mining Assumptions for Software Components using Machine Learning"
+     Gaaloul Khouloud, Menghi Claudio, Nejati Shiva, Lionel Briand, David Wolfe
+     European Software Engineering Conference and Symposium on the Foundations of Software Engineering (ESEC/FSE), 2020
+  - "Combining Genetic Programming and Model Checking to Generate Environment Assumptions"
+     Gaaloul Khouloud, Menghi Claudio, Nejati Shiva, Lionel Briand, Yago Isasi Parache
+     IEEE Transactions on Software Engineering (TSE), 2021
+
+EPIcuRus includes the following FOSS components:
+  - ModelChecking, Evaluation (developed by the authors)
+  - staliro, IFBT-UR, IFBT-ART (originally developed by Georgios Fainekos (fainekos@asu.edu), modified by the authors, licensed under the GPL v2 license; read LICENSE.md for details)
+  - GP-utils (originally developed by Sara Silva (sara@fc.ul.pt), modified by the authors, licensed under the GPL v2 license; read LICENSE.md for details)
