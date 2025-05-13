@@ -11,7 +11,8 @@ activeScenarioTS = ''; % TODO: probably delete this
 
 % Temp
 if strcmp(modelname, 'demo')
-% This is Temp    
+% This is Temp 
+    % TODO Replace phi and preds, maybe even input_bounds, with the ones from the RT, then also replace them in the code below
     % Defines of the requirement of interest.
     % constraint is over the output, so we need A to have as many entries as there are outputs
     phi='<>_[0,100](p1)';
@@ -100,7 +101,8 @@ end
 
 % Coming from tutorial.m
 policy='UR'; % Standard policy
-init_cond = []; % QUESTION: what is this?
+% init_cond = [0 50;0 50;0 10;0 10;0 50;0 50]; % ANSWER: this is the range of initial value (at t=0) of each input traces
+init_cond = [];
 sim_time=1; % QUESTION: what is this?
 learningMethod='GP'; %"GP", "DT"
 GPalgorithm='GP'; % 'RS','GP'
@@ -175,20 +177,24 @@ for run=yassou_opt.runsStartId:yassou_opt.runsEndId
         %% TEST SUITE GEN with some staliro configuration
         staliroTimeTic=tic;
         % TODO MAJOR TASK, see in genTestSuite.m
+        % disp(phi);
+        % disp(preds);
+        % disp(input_names);
+        % error('eikfbiedsk')
         testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,epicurus_opt); % TODO: implement this function
+        % disp(testSuite);
         % NOTE: testSuite will contain a list of falsifying test cases 
         staliroTime=toc(staliroTimeTic);
 
-
-        error('Iterative repair approach is not yet implemented.');
-
         % Q: Did we find a counterexample?
+        % error('Iterative repair approach is not yet implemented.');
 
         %% FIND REPAIR
         repairTimeTic=tic;
         % TODO MAJOR TASK, see in findRepair.m
-        bestRepair = findRepair();
-        repairTime=toc(repairTimeTic);
+        bestRepair = findRepair(modelname, phi, preds, testSuite, yassou_opt);
+        repairTime = toc(repairTimeTic);
+        error('Completeness check is not yet implemented.');
 
         %% CHECK COMPLETENESS. FIX IF NOT COMPLETE
         completenessCheckTimeTic=tic;

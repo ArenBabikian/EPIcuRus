@@ -1,0 +1,14 @@
+vardef
+	reset,Bool,input;
+	TL,Real,input;
+	BL,Real,input;
+	IC,Real,input;
+	yout,Real,output;
+	normal_yout,Real,input;
+	normal_yout,Real,output;
+endvardef
+reqdef
+	BL <= IC & IC <= TL & reset, yout == IC;
+	true, yout <= TL & yout >= BL;
+	!reset & normal_yout <= TL & normal_yout >= BL, yout == normal_yout;
+endreqdef

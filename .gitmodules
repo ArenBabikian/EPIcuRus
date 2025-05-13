@@ -1,0 +1,3 @@
+[submodule "yassou_evaluation/lm_challenges"]
+	path = yassou_evaluation/lm_challenges
+	url = https://github.com/hbourbouh/lm_challenges.git

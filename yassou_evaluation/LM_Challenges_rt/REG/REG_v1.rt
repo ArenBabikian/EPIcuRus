@@ -1,0 +1,24 @@
+vardef
+	count_roll_output_exceeding_50, Int, output;
+	count_pitch_output_exceeding_50, Int, output;
+	count_yaw_output_exceeding_50, Int, output;
+	count_airspeed_output_exceeding_32, Int, output;
+	count_height_output_exceeding_32, Int, output;
+	roll_command_acceleration, Real, output;
+	pitch_command_acceleration, Real, output;
+	yaw_command_acceleration, Real, output;
+	airspeed_command_acceleration, Real, output;
+	height_command_acceleration, Real, output;
+endvardef
+reqdef 
+	true, count_roll_output_exceeding_50 <= 100;
+	true, count_pitch_output_exceeding_50 <= 100;
+	true, count_yaw_output_exceeding_50 <= 100;
+	true, count_airspeed_output_exceeding_32 <= 100;
+	true, count_height_output_exceeding_32 <= 100;
+	true, roll_command_acceleration <= 50.0;
+	true, pitch_command_acceleration <= 50.0;
+	true, yaw_command_acceleration <= 50.0;
+	true, airspeed_command_acceleration <= 32.0;
+	true, height_command_acceleration <= 32.0;
+endreqdef

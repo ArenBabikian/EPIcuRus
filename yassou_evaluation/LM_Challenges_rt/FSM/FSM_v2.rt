@@ -1,0 +1,60 @@
+table System
+	vardef
+		standby,Bool,input;
+		apfail,Bool,input;
+		supported,Bool,input;
+		limits,Bool,input;
+		pullup,Bool,output;
+	endvardef
+	reqdef
+		limits & !standby & !apfail & supported, pullup;
+	endreqdef
+endtable
+table Autopilot
+vardef
+	standby,Bool,input;
+	apfail,Bool,input;
+	supported,Bool,input;
+	good,Bool,input;
+	ap_transition,Bool,input;
+	ap_nominal,Bool,input;
+	ap_maneuver,Bool,input;
+	ap_standby,Bool,input;
+	ap_transition_out,Bool,output;
+	ap_nominal_out,Bool,output;
+	ap_maneuver_out,Bool,output;
+	ap_standby_out,Bool,output;
+	pullup,Bool,output;
+endvardef
+reqdef
+	standby & ap_transition, ap_standby_out;
+	ap_transition & good & supported & !standby, ap_nominal_out;
+	ap_nominal & !good & !standby, ap_maneuver_out;
+	ap_nominal & standby, ap_standby_out;
+	ap_maneuver & standby & good, ap_standby_out;
+	ap_maneuver & supported & good & !standby, ap_transition_out;
+	ap_standby & !standby & !apfail, ap_transition_out;
+	ap_standby & apfail, ap_maneuver_out;
+	!standby & !apfail & supported, pullup;
+endreqdef
+endtable
+table Sensor
+vardef
+	mode,Bool,input;
+	request,Bool,input;
+	limits,Bool,input;
+	sen_nominal,Bool,input;
+	sen_transition,Bool,input;
+	sen_fault,Bool,input;
+	sen_nominal_out,Bool,output;
+	sen_transition_out,Bool,output;
+	sen_fault_out,Bool,output;
+	good,Bool,output;
+endvardef
+reqdef
+	limits, sen_fault_out & not good;
+	sen_nominal & !request & !limits, sen_transition_out;
+	sen_fault & !request & !limits, sen_transition_out;
+	sen_transition & request & mode, sen_nominal_out;
+endreqdef
+endtable

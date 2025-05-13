@@ -1,0 +1,16 @@
+vardef
+	sqrtOfWeight,Real,input;
+	storeCat,Int,input;
+	vehAirPress,Real,input;
+	CalAirspeedMin,Real,output;
+	lowSpeedWarningAllowed,Real,output;
+	swimGet_agcasLowSpeedWarn,Real,output;
+	warningTrigForMinPress,Real,output;
+	lowSpeedWarningTrue,Bool,output;
+endvardef
+reqdef
+	sqrtOfWeight > 0.0 & storeCat == 0, CalAirspeedMin == 1.25921 * sqrtOfWeight + 10.0;
+	sqrtOfWeight > 0.0 & storeCat == 1, CalAirspeedMin == 1.33694 * sqrtOfWeight + 10.0;
+	sqrtOfWeight > 0.0 & lowSpeedWarningAllowed == 1.0 & vehAirPress < warningTrigForMinPress, lowSpeedWarningTrue;
+endreqdef
+

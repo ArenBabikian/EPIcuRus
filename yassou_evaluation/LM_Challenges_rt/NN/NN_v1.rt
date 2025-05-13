@@ -1,0 +1,9 @@
+vardef
+	x,Real,input;
+	y,Real,input;
+	z,Real,output;
+endvardef
+reqdef 
+	true, z <= 1.1;
+	true, z >= -0.2;
+endreqdef

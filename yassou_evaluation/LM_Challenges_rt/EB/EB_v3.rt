@@ -1,0 +1,21 @@
+vardef
+	det_B_BT,Real,input;
+	ridge_on,Bool,output;
+	check_1_1,Real,output;
+	check_1_2,Real,output;
+	check_1_3,Real,output;
+	check_2_1,Real,output;
+	check_2_2,Real,output;
+	check_2_3,Real,output;
+	check_3_1,Real,output;
+	check_3_2,Real,output;
+	check_3_3,Real,output;
+	Buminusd_norm,Real,output;
+	eps6,Real,output;
+  eps12,Real,output;
+endvardef
+reqdef
+	det_B_BT<=eps12, ridge_on & (((check_1_1-1.0)>=0->(check_1_1-1.0)<eps6) & ((check_1_1-1.0)<0->(-check_1_1+1.0)<eps6)) & ((check_1_2>=0->check_1_2<eps6) & (check_1_2<0->(-check_1_2)<eps6)) & ((check_1_3>=0->check_1_3<eps6) & (check_1_3<0->(-check_1_3)<eps6)) & ((check_2_1>=0->check_2_1<eps6) & (check_2_1<0->(-check_2_1)<eps6)) & (((check_2_2-1.0)>=0->(check_2_2-1.0)<eps6) & ((check_2_2-1.0)<0->(-check_2_2+1.0)<eps6)) & ((check_2_3>=0->check_2_3<eps6) & (check_2_3<0->(-check_2_3)<eps6)) & ((check_3_1>=0->check_3_1<eps6) & (check_3_1<0->(-check_3_1)<eps6)) & ((check_3_2>=0->check_3_2<eps6) & (check_3_2<0->(-check_3_2)<eps6)) & (((check_3_3-1.0)>=0->(check_3_3-1.0)<eps6) & ((check_3_3-1.0)<0->(-check_3_3+1.0)<eps6));
+	det_B_BT<=eps12, ridge_on & (((check_1_1-1.0)>=0->(check_1_1-1.0)<eps12) & ((check_1_1-1.0)<0->(-check_1_1+1.0)<eps12)) & ((check_1_2>=0->check_1_2<eps12) & (check_1_2<0->(-check_1_2)<eps12)) & ((check_1_3>=0->check_1_3<eps12) & (check_1_3<0->(-check_1_3)<eps12)) & ((check_2_1>=0->check_2_1<eps12) & (check_2_1<0->(-check_2_1)<eps12)) & (((check_2_2-1.0)>=0->(check_2_2-1.0)<eps12) & ((check_2_2-1.0)<0->(-check_2_2+1.0)<eps12)) & ((check_2_3>=0->check_2_3<eps12) & (check_2_3<0->(-check_2_3)<eps12)) & ((check_3_1>=0->check_3_1<eps12) & (check_3_1<0->(-check_3_1)<eps12)) & ((check_3_2>=0->check_3_2<eps12) & (check_3_2<0->(-check_3_2)<eps12)) & (((check_3_3-1.0)>=0->(check_3_3-1.0)<eps12) & ((check_3_3-1.0)<0->(-check_3_3+1.0)<eps12));
+	true, Buminusd_norm < 0;
+endreqdef

@@ -1,0 +1,21 @@
+vardef
+	Vv_0,Real,input;
+  Vv_1,Real,input;
+  Vv_2,Real,input;
+  Xtarg_0,Real,input;
+  Xtarg_1,Real,input;
+  Xtarg_2,Real,input;
+  Xv_0,Real,input;
+  Xv_1,Real,input;
+  Xv_2,Real,input;
+  r,Real,input;
+  yout_0,Real,output;
+  yout_1,Real,output;
+  yout_2,Real,output;
+endvardef
+reqdef
+	true, Vv_0*yout_0 + Vv_1*yout_1 + Vv_2*yout_2>0;
+	true, ((yout_0-Xtarg_0)*(yout_0-Xtarg_0)+(yout_1-Xtarg_1)*(yout_1-Xtarg_1)+(yout_2-Xtarg_2)*(yout_2-Xtarg_2)) >= r & ((yout_0-Xtarg_0)*(yout_0-Xv_0)+(yout_1-Xtarg_1)*(yout_1-Xv_1)+(yout_2-Xtarg_2)*(yout_2-Xv_2)) == 0;
+	true, (yout_0*(Xtarg_0-Xv_0)+yout_1*(Xtarg_1-Xv_1)+yout_2*(Xtarg_2-Xv_2))>0;
+	true, yout_2==Xtarg_2;
+endreqdef

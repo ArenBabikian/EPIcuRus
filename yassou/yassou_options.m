@@ -20,6 +20,8 @@ classdef yassou_options < staliro_options
         overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
         repairMethod = 'none'; % 'none' | 'epicurus' | 'yassou'
 
+        nbrControlPoints = 1; % Number of control points
+
     end
 
     methods

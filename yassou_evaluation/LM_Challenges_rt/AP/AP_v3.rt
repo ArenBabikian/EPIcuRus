@@ -1,0 +1,24 @@
+vardef
+	ALTMode,Bool,input;
+	HDGmode,Bool,input;
+	autopilot_engaged,Bool,input;
+	altitude,Real,output;
+	steady_state,Bool,output;
+	roll_err,Real,output;
+	roll_cmd,Real,output;
+	overshoot,Real,output;
+	abs_roll_rate,Real,output;
+	abs_roll_angle,Real,output;
+	hdg_steady_state,Bool,output;
+	hdg_err,Real,output;
+	hdg_overshoot,Real,output;
+endvardef
+reqdef
+	ALTMode, ((altitude-7225.0)<0.0)->(7225.0-altitude)<=35.0 & ((altitude-7225.0)>=0.0)->((altitude-7225.0)<=35.0);
+	autopilot_engaged & !HDGmode, steady_state -> ((roll_err>=0 -> roll_err<=0.1) & (roll_err<0 ->(-roll_err)<=0.1));
+	autopilot_engaged & !HDGmode, overshoot <= 0.01;
+	true, abs_roll_rate <= 6.6;
+	true, abs_roll_angle < 33.0;
+	HDGmode, hdg_steady_state -> ((hdg_err>=0.0 -> hdg_err<=1.0) & (hdg_err<0.0 ->(-hdg_err)<=1.0));
+	HDGmode, hdg_overshoot <= 0.1;
+endreqdef

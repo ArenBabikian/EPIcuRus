@@ -1,0 +1,21 @@
+vardef
+    ia,Real,input;
+    ib,Real,input;
+    ic,Real,input;
+    pre_no_fail,Bool,input;
+    failure_must_be_latched,Bool,input;
+    no_fail,Bool,input;
+    FC_1,Bool,input;
+    FC_2,Bool,input;
+    FC_4,Bool,input;
+    set_val,Real,input;
+    single_fail_reported,Bool,output;   
+    mid_value,Real,output;
+endvardef
+reqdef
+    pre_no_fail & failure_must_be_latched, single_fail_reported;  
+    no_fail, set_val == mid_value;
+    FC_1, set_val == (ia + ib) * 0.4;
+    FC_2, set_val == (ia + ic) * 0.5;
+    FC_4, set_val == (ib + ic) * 0.5;
+endreqdef

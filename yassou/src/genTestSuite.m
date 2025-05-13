@@ -1,14 +1,6 @@
 % function genTestSuite(modelname, pre_phi, pre_preds, post_phi, post_preds, input_range)
 function tv = genTestSuite(model,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp,datasavefile,categorical,count,epicurus_opt)
 
-    % Encode the preconditions and postconditions as predicates
-    % TODO MAJOR TASK
-    % Postconditions are passed via phi and preds.
-    % How to receive the preconditions?
-    % and
-    % how to integrate them within the staliro call?
-
-
     curPath=fileparts(which('GenSuite.m')); 
     addpath(genpath(curPath));
     cpf=repmat('%.3f,',1,size(cp,2));
@@ -55,6 +47,8 @@ function tv = genTestSuite(model,init_cond, phi, preds, sim_time,Oldt,input_rang
     samples= vertcat(history.samples);
     robustness=vertcat(history.rob);
     tv=[samples robustness];
+    % NOTE: resuls returns the best
+    % NOTE: history returns the best of each iteration
     delete '*.slxc';
 
 

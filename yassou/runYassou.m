@@ -1,4 +1,3 @@
-
 function runyassou(model)
 
 %% Setup the environment
@@ -45,6 +44,7 @@ yassou_opt.runsEndId = 2;   % End ID for runs
 
 yassou_opt.overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
 yassou_opt.repairMethod = 'todo';
+yassou_opt.nbrControlPoints=1;
 
 %% Set up Epicurus options
 
@@ -78,7 +78,7 @@ epicurus_opt.policy='UR'; % staliro optimization policy
 
 % Assumption generation options
 epicurus_opt.writeInternalAssumptions=1; % write assumptions to file
-epicurus_opt.nbrControlPoints=1;
+epicurus_opt.nbrControlPoints=yassou_opt.nbrControlPoints;
 epicurus_opt.desiredFitness=0;
 epicurus_opt.exploit=0;
 epicurus_opt.epsilon=10;
@@ -180,4 +180,4 @@ disp('##########################################################################
 % run EPICURUS on the 1 RT
 
 % disp outcome
-% 
+%

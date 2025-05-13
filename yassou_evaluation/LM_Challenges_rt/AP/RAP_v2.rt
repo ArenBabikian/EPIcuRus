@@ -1,0 +1,22 @@
+vardef
+	autopilot_engaged,Bool,input;
+	HDGmode,Bool,input;
+	TurnKnob,Real,input;
+	Ca,Bool,input;
+	Cb,Bool,input;
+	Cd,Bool,input;
+	roll_actuator_command,Real,output;
+	roll_cmd,Real,output;
+	roll_hold_reference,Real,output;
+	hdg_hold_mode_cmd,Real,output;
+	roll_angle,Real,output;
+endvardef
+reqdef
+	!autopilot_engaged, roll_actuator_command == 0.0;
+	!HDGmode & autopilot_engaged, roll_cmd == roll_hold_reference;
+	!HDGmode & autopilot_engaged & Ca, roll_hold_reference == roll_angle;
+  !HDGmode & autopilot_engaged & Cb, roll_hold_reference == 0.0;
+  !HDGmode & autopilot_engaged & Cd, roll_hold_reference == TurnKnob;
+	true, (roll_actuator_command>=0.0 -> roll_actuator_command<=15.0) & (roll_actuator_command<0.0 -> (-roll_actuator_command)<=15.0);
+	HDGmode, roll_cmd == hdg_hold_mode_cmd;
+endreqdef
