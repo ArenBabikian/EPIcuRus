@@ -33,6 +33,9 @@ if strcmp(modelname, 'demo')
     % disp(cmd);
 else
 
+% TEMP START
+% Note that all this stuff will likely not be necessary, since we (most probably) no longer need the RTs tat are embedded in the simulink model
+
 % Load model
 load_system(modelname);
 reqPath = modelname + "/" + rtname;
@@ -51,14 +54,30 @@ set_param(reqPath, "Commented","off") % TODO is this nescessary?
 % disp(symbTable);
 % disp(assTable);
 
-% Make into a form handlable by STALIRO
-% TODO MAJOR TASK
-% take 1 Req from the RT
-% (1) Integrate the precondition. (as some initial condition to STALIRA?)
-% (2) transform the postcondition into a phi and a set of predicates (which will be falsified by STALIRO)
-% STALIRO does the fitness, etc. by itself
+% TEMP END
 
-% Done manually for now
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TASK DESCRIPTION
+
+% INPUT:
+% (1) a MATLAB file, such as /yassou_evaluation/lm_challenges_json/AP_v1.m. 
+% This is manually (LLM-asisted) created from a corresponding .rt file in yassou_evaluation/LM_Challenges_rt/*/
+
+% MAJOR QUESTIONS:
+% (1) How to integrate preconditions (boolean constraints over the inputs)?
+% (2) How to transform the postcondition into a phi and a set of predicates? ANSWER: this will be done manually for now
+% (3) How to support systems that have both real and boolean inputs and outputs?
+% (4) How to support quadratic requirements
+% (5) Where do we get the input bounds (aside from the preconditions)?
+% (6) How to correctly set up the staliro integration (in genTestSuite.m)?
+
+% TASK:
+% (1) Feed the preconditions, 'phi', 'preds', 'input_bounds', ... into STaliro (see genTestSuite.m)
+% (2) get a set of falsifying and non-falsifying test cases
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TEMPORAY: Done manually for now
 
 % phi='<>_[0,100](p1->p2)';
 % preds(1).str='p1';
