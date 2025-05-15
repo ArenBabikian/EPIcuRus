@@ -22,6 +22,10 @@ if strcmp(modelname, 'demo')
     preds(1).b=50;
 
     % WHY IS GAALOUL DOING THIS?
+    % From Federico: I believe that demo.mat contains some parameters
+    % needed by the Simulink model, so she is loading all the variables in
+    % the base workspace. This should be equivalent to:
+    % evalin('base','load("demo.mat");');
     if ~strcmp(modelname, '')
         cmd = load('-mat', 'demo.mat');
         vars = fieldnames(cmd);
@@ -34,7 +38,7 @@ if strcmp(modelname, 'demo')
 else
 
 % TEMP START
-% Note that all this stuff will likely not be necessary, since we (most probably) no longer need the RTs tat are embedded in the simulink model
+% Note that all this stuff will likely not be necessary, since we (most probably) no longer need the RTs that are embedded in the simulink model
 
 % Load model
 load_system(modelname);
@@ -65,11 +69,30 @@ set_param(reqPath, "Commented","off") % TODO is this nescessary?
 
 % MAJOR QUESTIONS:
 % (1) How to integrate preconditions (boolean constraints over the inputs)?
-% (2) How to transform the postcondition into a phi and a set of predicates? ANSWER: this will be done manually for now
+    % From Federico: Look at Q3.
+% (2) How to transform the postcondition into a phi and a set of predicates?
+    % ANSWER: this will be done manually for now.
 % (3) How to support systems that have both real and boolean inputs and outputs?
-% (4) How to support quadratic requirements
+    % From Federico: the quick and dirty answer is that we turn them in two
+    % inequalities:
+    % a == true ===> (a <= 1) & (a >= 1)
+    % Since the equal is always included, these are equivalent and we
+    % pretend that the boolean variable is a real variable. Otherwise, it
+    % get's a bit harder to make the code run.
+% (4) How to support quadratic requirements?
+    % From Federico: Non-linear requirements are not supported by dp-taliro
+    % (the main trace-checker for S-Taliro). I believe they should be
+    % supported by the Hecate trace checker, but I haven't tested it
+    % thoroughly.
 % (5) Where do we get the input bounds (aside from the preconditions)?
+    % From Federico: we could assume that the user specifies the input
+    % range in the Assumption tab of the Requirements Table. We briefly
+    % considered it for Hecate, but then decided against since the Test
+    % Sequence block gives more freedom in designing the signals.
 % (6) How to correctly set up the staliro integration (in genTestSuite.m)?
+    % From Federico: Is there a specific problem here that you are worried
+    % about? The hardest part seems to be converting the requirements, but
+    % that should be already handled.
 
 % TASK:
 % (1) Feed the preconditions, 'phi', 'preds', 'input_bounds', ... into STaliro (see genTestSuite.m)
@@ -101,6 +124,8 @@ end
 if strcmp(modelname, 'demo')
     % Load the model and the requirement of interest
     property='R'; % QUESTION: what is this?
+                    % From Federico: Not entirely sure, but it seems it is
+                    % used only to define the file names and print strings.
     input_names={'rollCmd_','yawCmd', 'beta_deg', 'vtas_kts','roll','yaw'};
     % input_names={};
     categorical=[]; % QUESTION: what is this?
@@ -123,6 +148,9 @@ policy='UR'; % Standard policy
 % init_cond = [0 50;0 50;0 10;0 10;0 50;0 50]; % ANSWER: this is the range of initial value (at t=0) of each input traces
 init_cond = [];
 sim_time=1; % QUESTION: what is this?
+            % This should be the simulation time for Simulink in seconds.
+            % The demo model will be run only for the timesteps between 0s
+            % and 1s.
 learningMethod='GP'; %"GP", "DT"
 GPalgorithm='GP'; % 'RS','GP'
 
