@@ -1,4 +1,4 @@
-classdef yassou_options < staliro_options
+classdef yassou_options < epicurus_options
     % YassouOptions - Class to manage default options for the Yassou application.
     %
     % Properties:
@@ -19,8 +19,8 @@ classdef yassou_options < staliro_options
 
         overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
         repairMethod = 'none'; % 'none' | 'epicurus' | 'yassou'
+        reqIdToRepair = -1; % ID of the requirement to repair. If -1, repair all of them 
 
-        nbrControlPoints = 1; % Number of control points
 
     end
 

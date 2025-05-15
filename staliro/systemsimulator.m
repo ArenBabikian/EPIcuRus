@@ -283,6 +283,7 @@ elseif strcmp(inputModelType, 'ss')
 elseif strcmp(inputModelType, 'simulink')
     
     simopt = simget(inputModel);
+    simopt = simset(simopt, 'FixedStep', staliro_opt.SampTime); % for NN model from LM
     
     if staliro_dimX~=0
         simopt = simset(simopt, 'InitialState', XPoint);

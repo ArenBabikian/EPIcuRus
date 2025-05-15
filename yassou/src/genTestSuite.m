@@ -23,8 +23,9 @@ function tv = genTestSuite(model,init_cond, phi, preds, sim_time,Oldt,input_rang
             isfalsification=0;   
             optimization_solver = 'IFBT_UR';
         otherwise    % uniform random by default
-            isfalsification=0;   
-            optimization_solver = 'UR_Taliro';
+            error('Unknown policy');
+            % isfalsification=0;   
+            % optimization_solver = 'UR_Taliro';
     end
 
     epicurus_opt.optimization_solver = optimization_solver;  

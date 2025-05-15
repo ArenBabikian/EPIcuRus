@@ -1,143 +1,153 @@
-function yassou(modelname, rtname, yassou_opt, epicurus_opt, gp_epicurus_opt, state)
+% function yassou(modelname, rtname, yassou_opt, epicurus_opt, gp_epicurus_opt, state)
+function yassou(modelname, modeldatapath, rt_data, yassou_opt, gp_epicurus_opt, state)
 
-    
 % Coming from epicurus.m
-global hFeatures;
+% global hFeatures;
 
 
-%% Handle the Requirements Table
+%% Prepare Yassou
+input_names = {rt_data.inputs.name};
+input_types = {rt_data.inputs.type};
 
-activeScenarioTS = ''; % TODO: probably delete this
-
-% Temp
-if strcmp(modelname, 'demo')
-% This is Temp 
-    % TODO Replace phi and preds, maybe even input_bounds, with the ones from the RT, then also replace them in the code below
-    % Defines of the requirement of interest.
-    % constraint is over the output, so we need A to have as many entries as there are outputs
-    phi='<>_[0,100](p1)';
-    % constraints in the form Ax<=b
-    preds(1).str='p1';
-    preds(1).A=[1 0];
-    preds(1).b=50;
-
-    % WHY IS GAALOUL DOING THIS?
-    if ~strcmp(modelname, '')
-        cmd = load('-mat', 'demo.mat');
-        vars = fieldnames(cmd);
-        for i = 1:length(vars)
-            assignin('base', vars{i}, cmd.(vars{i}));
-        end
+% TODO: this is very temporary
+input_range = zeros(length(input_types), 2);
+for i = 1:length(input_types)
+    if strcmpi(input_types{i}, 'Bool')
+        input_range(i, :) = [0 1];
+    elseif strcmpi(input_types{i}, 'Real')
+        input_range(i, :) = [0 50]; % TODO tweak this, based on the case study
+    else
+        error(['Unknown input type: ', input_types{i}]);
     end
+end
 
-    % disp(cmd);
-else
+% TODO: Will likely need to work with this
+init_cond = []; % [0 50;0 50;0 10;0 10;0 50;0 50]; % ANSWER: this is the range of initial value (at t=0) of each input traces
 
-% TEMP START
-% Note that all this stuff will likely not be necessary, since we (most probably) no longer need the RTs tat are embedded in the simulink model
-
-% Load model
-load_system(modelname);
-reqPath = modelname + "/" + rtname;
-set_param(reqPath, "Commented","off") % TODO is this nescessary?
-
-% Extract the requirements table
-[req_table_path, o2] = extractReqTable(modelname, activeScenarioTS, []);
-% disp(req_table_path);
-% disp(o2);
+% TODO: this is temp, but will likely stay the same
+epicurus_add_to_oplist = input_names;
 % error('a');
 
-% Read RT, store in memory
-[reqTable, symbTable, assTable] = testReadTable(modelname, req_table_path);
-% writetable(reqTable, 'reqTableOutput.csv');
-% disp(reqTable);
-% disp(symbTable);
-% disp(assTable);
+% NOTE: STALIRO Options - Unsure about these
+activeScenarioTS = ''; % TODO: what is this?
+property = 'R'; % TODO: what is this?
+categorical = []; % TODO: what is this?
 
-% TEMP END
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TASK DESCRIPTION
-
-% INPUT:
-% (1) a MATLAB file, such as /yassou_evaluation/lm_challenges_json/AP_v1.m. 
-% This is manually (LLM-asisted) created from a corresponding .rt file in yassou_evaluation/LM_Challenges_rt/*/
-
-% MAJOR QUESTIONS:
-% (1) How to integrate preconditions (boolean constraints over the inputs)?
-% (2) How to transform the postcondition into a phi and a set of predicates? ANSWER: this will be done manually for now
-% (3) How to support systems that have both real and boolean inputs and outputs?
-% (4) How to support quadratic requirements
-% (5) Where do we get the input bounds (aside from the preconditions)?
-% (6) How to correctly set up the staliro integration (in genTestSuite.m)?
-
-% TASK:
-% (1) Feed the preconditions, 'phi', 'preds', 'input_bounds', ... into STaliro (see genTestSuite.m)
-% (2) get a set of falsifying and non-falsifying test cases
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TEMPORAY: Done manually for now
-
-% phi='<>_[0,100](p1->p2)';
-% preds(1).str='p1';
-% preds(1).A=[1 0];
-% preds(1).b=50;
-% preds(2).str='p2';
-% preds(2).A=[0 1];
-% preds(2).b=50;
-% disp(preds)
-
-phi='[]_[0,100](p1)';
-preds(1).str='p1';
-preds(1).A=[-1 0];
-preds(1).b=0;
-
-end
-
-%% TEMP
-
-% coming from tutorial.m
-if strcmp(modelname, 'demo')
-    % Load the model and the requirement of interest
-    property='R'; % QUESTION: what is this?
-    input_names={'rollCmd_','yawCmd', 'beta_deg', 'vtas_kts','roll','yaw'};
-    % input_names={};
-    categorical=[]; % QUESTION: what is this?
-    input_range=[0 50;0 50;0 10;0 10;0 50;0 50];
-    add_vars_to_oplist = {'rollCmd_','yawCmd', 'beta_deg', 'vtas_kts'};
-else
-    % Load the model and the requirement of interest
-    property='R';
-    input_names={'u1', 'u2'}; % hard-coded for now
-    % input_names={};
-    categorical=[];
-    input_range=[0 100;0 100]; % unsure
-    add_vars_to_oplist = {'u1', 'u2'};
-    % input_names={'Hecate_u1','Hecate_u2','Hecate_u3','Hecate_u4'};
-    % input_range=[-2 5;-2 5;-2 5;-2 5];
-end
-
-% Coming from tutorial.m
 policy='UR'; % Standard policy
-% init_cond = [0 50;0 50;0 10;0 10;0 50;0 50]; % ANSWER: this is the range of initial value (at t=0) of each input traces
-init_cond = [];
 sim_time=1; % QUESTION: what is this?
 learningMethod='GP'; %"GP", "DT"
 GPalgorithm='GP'; % 'RS','GP'
 
-% Coming from epicurus.m, modified slightly
-% TODO adjsut below
-yassou_results(yassou_opt.runsEndId) = struct( ...
-    'repair', '', ...
-    'isValid', [], ...
-    'executiontime', [], ...
-    'iteration', [] ...
-);
 % originalqctPath=fullfile(fileparts(which([scriptname,'original.qct'])),[scriptname,'original.qct']);
 
+reqIdToRepair = yassou_opt.reqIdToRepair;
+if reqIdToRepair == -1
+    % Repair all requirements
+    startId = 1;
+    endId = length(rt_data.requirements);
+else
+    % Repair only the requirement of interest
+    startId = reqIdToRepair;
+    endId = reqIdToRepair;
+end
+
+% % OBSOLETE START - Gather RT data from Simulink model
+% % Note that all this stuff will likely not be necessary, since we (most probably) no longer need the RTs tat are embedded in the simulink model
+
+% % Load model
+% load_system(modelname);
+% reqPath = modelname + "/" + rtname;
+% set_param(reqPath, "Commented","off") % TODO is this nescessary?
+
+% % Extract the requirements table
+% [req_table_path, o2] = extractReqTable(modelname, activeScenarioTS, []);
+% % disp(req_table_path);
+% % disp(o2);
+% % error('a');
+
+% % Read RT, store in memory
+% [reqTable, symbTable, assTable] = testReadTable(modelname, req_table_path);
+% % writetable(reqTable, 'reqTableOutput.csv');
+% % disp(reqTable);
+% % disp(symbTable);
+% % disp(assTable);
+
+% % OBSOLETE END - Gather RT data from Simulink model
+
+%% Prepare the model for simulation
+
+% Load data to complete the model
+cmd = load('-mat', modeldatapath);
+vars = fieldnames(cmd);
+for i = 1:length(vars)
+    assignin('base', vars{i}, cmd.(vars{i}));
+end
+
+for i = startId:endId
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%
+    % TASK DESCRIPTION
+
+    % INPUT:
+    % (1) a MATLAB file, such as /yassou_evaluation/lm_challenges_json/AP_v1.m. 
+    % This is manually (LLM-asisted) created from a corresponding .rt file in yassou_evaluation/LM_Challenges_rt/*/
+
+    % MAJOR QUESTIONS:
+    % (1) How to integrate preconditions (boolean constraints over the inputs)?
+    % (2) How to transform the postcondition into a phi and a set of predicates? ANSWER: this will be done manually for now
+    % (3) How to support systems that have both real and boolean inputs and outputs?
+    % (4) How to support quadratic requirements
+    % (5) Where do we get the input bounds (aside from the preconditions)?
+    % (6) How to correctly set up the staliro integration (in genTestSuite.m)?
+
+    % TASK:
+    % (1) Feed the preconditions, 'phi', 'preds', 'input_bounds', ... into STaliro (see genTestSuite.m)
+    % (2) get a set of falsifying and non-falsifying test cases
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+    %% Extract the requirement of interest
+    req = rt_data.requirements(i);
+    precondition = req.precondition;
+    phi = req.phi;
+    preds = req.preds;
+    % input_bounds = rt_data.input_bounds;
+
+    % phi='<>_[0,100](p1->p2)';
+    % preds(1).str='p1';
+    % preds(1).A=[1 0];
+    % preds(1).b=50;
+    % preds(2).str='p2';
+    % preds(2).A=[0 1];
+    % preds(2).b=50;
+    % disp(preds)
+
+    % phi='[]_[0,100](p1)';
+    % preds(1).str='p1';
+    % preds(1).A=[-1 0];
+    % preds(1).b=0;
+
+    % % For 'demo' model
+    % phi='<>_[0,100](p1)';
+    % % constraints in the form Ax<=b
+    % preds(1).str='p1';
+    % preds(1).A=[1 0];
+    % preds(1).b=50;
+    
+
+
+    %%
+
+
+
+end
+
+
+
 % Setting the interpolation function: it is either const or pconst
-nControlPoints=epicurus_opt.nbrControlPoints;
+nControlPoints=yassou_opt.nbrControlPoints;
 if (nControlPoints==1) 
     interpolation_type='const';
 else
@@ -156,8 +166,8 @@ cp_array=nControlPoints*ones(1,numberOfInputs);
 
 % Add to operation list
 % disp(state.oplist);
-for i = 1:length(add_vars_to_oplist)
-    var_name = add_vars_to_oplist{i};
+for i = 1:length(epicurus_add_to_oplist)
+    var_name = epicurus_add_to_oplist{i};
     state.oplist(end+1, :) = state.oplist(end, :); % Shift the last element by one
     state.oplist(end-1, :) = {var_name, [0], {{''}, {''}}, 'aexp'};... % Add to before-last index
 end
@@ -167,7 +177,7 @@ end
 % Setup environment
 % TODO: move this much earlier
 
-[resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
+% [resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
 
 %% END TEMP
 
@@ -200,7 +210,7 @@ for run=yassou_opt.runsStartId:yassou_opt.runsEndId
         % disp(preds);
         % disp(input_names);
         % error('eikfbiedsk')
-        testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,epicurus_opt); % TODO: implement this function
+        testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
         % disp(testSuite);
         % NOTE: testSuite will contain a list of falsifying test cases 
         staliroTime=toc(staliroTimeTic);
@@ -230,7 +240,7 @@ for run=yassou_opt.runsStartId:yassou_opt.runsEndId
         error('Direct repair approach is not yet implemented.');
     elseif strcmp(yassou_opt.overallApproach, 'epicurus')
         % TODO: this is working, but needs cleanup
-        epicurus(modelname,property,init_cond, phi, preds, sim_time,input_names,categorical,input_range,epicurus_opt,gp_epicurus_opt,scriptname,resultfilename,algorithmFolder,state);
+        epicurus(modelname,property,init_cond, phi, preds, sim_time,input_names,categorical,input_range,yassou_opt,gp_epicurus_opt,scriptname,resultfilename,algorithmFolder,state);
 
     else
         error('Invalid repair approach specified.');
