@@ -19,7 +19,7 @@ for i = 1:length(input_types)
     if strcmpi(input_types{i}, 'Bool')
         input_range(i, :) = [0 1];
     elseif strcmpi(input_types{i}, 'Real')
-        input_range(i, :) = [0 50]; % TODO tweak this, based on the case study
+        input_range(i, :) = [-2 2]; % TODO tweak this, based on the case study
     else
         error(['Unknown input type: ', input_types{i}]);
     end
@@ -180,12 +180,25 @@ for i = startId:endId
 
             % TODO add budget checks
 
+            % Read from the file if it exists            
+            testsuite_filename = sprintf('testSuite_req%d_run%d.mat', i, run);
+            if exist(testsuite_filename, 'file')
+                load(testsuite_filename, 'testSuite');
+                disp(['Loaded test suite from ', testsuite_filename]);
+            else
+
             %% TEST SUITE GEN with some staliro configuration
             staliroTimeTic=tic;
             % TODO MAJOR TASK, see in genTestSuite.m
             testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
             % NOTE: testSuite will/may only contain a list of falsifying test cases 
             staliroTime=toc(staliroTimeTic);
+
+            % Save the generated test suite to a file
+            save(testsuite_filename, 'testSuite');
+            disp(['Test suite saved to ', testsuite_filename]);
+            end
+
 
             % Q: Did we find a counterexample?
             % error('Iterative repair approach is not yet implemented.');

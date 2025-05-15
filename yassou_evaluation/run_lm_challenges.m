@@ -49,11 +49,11 @@ yassou_opt.runsEndId = 2;   % End ID for runs
 
 % staliro calling options
 yassou_opt.policy='UR'; % staliro optimization policy; UR | ART | IFBT_UR | IFBT_ART
-yassou_opt.nbrControlPoints=1;
+yassou_opt.nbrControlPoints=3;
 
 yassou_opt.runs=1; % number of staliro iterations. This is hard-coded to 1 in [genSuite.m:168]
-yassou_opt.testSuiteSize=100; % number of test cases per staliro iteration (defaults to larger of the 2)
-yassou_opt.iteration1Size=100; % number of test cases in the first iteration (defaults to larger of the 2)
+yassou_opt.testSuiteSize=50; % number of test cases per staliro iteration (defaults to larger of the 2)
+yassou_opt.iteration1Size=50; % number of test cases in the first iteration (defaults to larger of the 2)
 
 
 
