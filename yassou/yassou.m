@@ -4,6 +4,10 @@ function yassou(modelname, modeldatapath, rt_data, yassou_opt, gp_epicurus_opt, 
 % Coming from epicurus.m
 % global hFeatures;
 
+%% Setup environment
+% TODO: move this much earlier
+
+% [resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
 
 %% Prepare Yassou
 input_names = {rt_data.inputs.name};
@@ -124,151 +128,112 @@ for i = startId:endId
         % that should be already handled.
 
     % TASK:
-    % (1) Feed the preconditions, 'phi', 'preds', 'input_bounds', ... into STaliro (see genTestSuite.m)
+    % (1) Feed the preconditions, 'phi', 'preds', 'input_range', ... into STaliro (see genTestSuite.m)
     % (2) get a set of falsifying and non-falsifying test cases
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
     %% Extract the requirement of interest
     req = rt_data.requirements(i);
     precondition = req.precondition;
     phi = req.phi;
     preds = req.preds;
-    % input_bounds = rt_data.input_bounds;
+    % input_range = rt_data.input_range;
 
-    % phi='<>_[0,100](p1->p2)';
-    % preds(1).str='p1';
-    % preds(1).A=[1 0];
-    % preds(1).b=50;
-    % preds(2).str='p2';
-    % preds(2).A=[0 1];
-    % preds(2).b=50;
-    % disp(preds)
-
-    % phi='[]_[0,100](p1)';
-    % preds(1).str='p1';
-    % preds(1).A=[-1 0];
-    % preds(1).b=0;
-
-    % % For 'demo' model
-    % phi='<>_[0,100](p1)';
-    % % constraints in the form Ax<=b
-    % preds(1).str='p1';
-    % preds(1).A=[1 0];
-    % preds(1).b=50;
+    %% Set up the Test suite Generation
     
-
-
-    %%
-
-
-
-end
-
-
-% Setting the interpolation function: it is either const or pconst
-nControlPoints=yassou_opt.nbrControlPoints;
-if (nControlPoints==1) 
-    interpolation_type='const';
-else
-    interpolation_type='pconst';
-end
-
-numberOfInputs=size(input_names,2); % the number of inputs 
-% cp_array: the vector contains the number of control points of each input
-cp_array=nControlPoints*ones(1,numberOfInputs);
-
-% categorical and cp_names in terms of control points.
-% if nControlPoints==1, then size(cp_names) == size(input_names)
-[categorical,cp_names]=getListOfFeatures(categorical,nControlPoints,input_names,cp_array); 
-% % the total simulation time in QCT : the total number of steps
-% kmax=(sim_time/assume_opt.SampTime);
-
-% Add to operation list
-% disp(state.oplist);
-for i = 1:length(epicurus_add_to_oplist)
-    var_name = epicurus_add_to_oplist{i};
-    state.oplist(end+1, :) = state.oplist(end, :); % Shift the last element by one
-    state.oplist(end-1, :) = {var_name, [0], {{''}, {''}}, 'aexp'};... % Add to before-last index
-end
-% disp(state.oplist);
-% error('a');
-
-% Setup environment
-% TODO: move this much earlier
-
-% [resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
-
-%% END TEMP
-
-%% Begin running Yassou
-for run=yassou_opt.runsStartId:yassou_opt.runsEndId
-
-    if strcmp(yassou_opt.overallApproach, 'iterative')
-
-        %% Set up the S-Taliro options
-
-        % From epicurus.m
-        Oldt=[];
-        oldA={};
-        bestA={}; % last assumptions
-        count=1; % iteration counter
-        valid=0; % valid assumption is initialized to false
-        hFeatures=[];
-        assumption=''; % the best assumption of the GP
-        iteration_idx_with_fitness_jumps=[];
-        iteration_idx_with_no_fitness_jumps=[];
-        disp(['Epicurus run: ',num2str(run)]);
-        disp(['Epicurus iteration: ',num2str(count)]);
-
-        % TODO add budget checks
-
-        %% TEST SUITE GEN with some staliro configuration
-        staliroTimeTic=tic;
-        % TODO MAJOR TASK, see in genTestSuite.m
-        % disp(phi);
-        % disp(preds);
-        % disp(input_names);
-        % error('eikfbiedsk')
-        testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
-        % disp(testSuite);
-        % NOTE: testSuite will contain a list of falsifying test cases 
-        staliroTime=toc(staliroTimeTic);
-
-        % Q: Did we find a counterexample?
-        % error('Iterative repair approach is not yet implemented.');
-
-        %% FIND REPAIR
-        repairTimeTic=tic;
-        % TODO MAJOR TASK, see in findRepair.m
-        bestRepair = findRepair(modelname, phi, preds, testSuite, yassou_opt);
-        repairTime = toc(repairTimeTic);
-        error('Completeness check is not yet implemented.');
-
-        %% CHECK COMPLETENESS. FIX IF NOT COMPLETE
-        completenessCheckTimeTic=tic;
-        % TODO MAJOR TASK, see in checkAndFixCompleteness.m
-        completenessCheck = checkAndFixCompleteness(); % TODO: implement this function
-        completenessCheckTime=toc(completenessCheckTimeTic);
-
-
-        % while we have not reached the budget
-        % apply repair, regenrate fitness functions
-
-
-    elseif strcmp(yassou_opt.overallApproach, 'direct')
-        error('Direct repair approach is not yet implemented.');
-    elseif strcmp(yassou_opt.overallApproach, 'epicurus')
-        % TODO: this is working, but needs cleanup
-        epicurus(modelname,property,init_cond, phi, preds, sim_time,input_names,categorical,input_range,yassou_opt,gp_epicurus_opt,scriptname,resultfilename,algorithmFolder,state);
-
+    % set up the interpolation function: it is either const or pconst
+    nControlPoints=yassou_opt.nbrControlPoints;
+    if (nControlPoints==1) 
+        interpolation_type='const';
     else
-        error('Invalid repair approach specified.');
+        interpolation_type='pconst';
+    end
+
+    numberOfInputs=size(input_names,2); % the number of inputs 
+    cp_array=nControlPoints*ones(1,numberOfInputs); % the vector contains the number of control points of each input
+
+    % categorical and cp_names in terms of control points.
+    % if nControlPoints==1, then size(cp_names) == size(input_names)
+    [categorical,cp_names]=getListOfFeatures(categorical,nControlPoints,input_names,cp_array); 
+    % % the total simulation time in QCT : the total number of steps
+    % kmax=(sim_time/assume_opt.SampTime);
+
+    %% Begin running Yassou
+    for run=yassou_opt.runsStartId:yassou_opt.runsEndId
+
+        if strcmp(yassou_opt.overallApproach, 'iterative')
+
+            %% Set up the S-Taliro options
+
+            % From epicurus.m
+            Oldt=[];
+            oldA={};
+            bestA={}; % last assumptions
+            count=1; % iteration counter
+            valid=0; % valid assumption is initialized to false
+            hFeatures=[];
+            assumption=''; % the best assumption of the GP
+            iteration_idx_with_fitness_jumps=[];
+            iteration_idx_with_no_fitness_jumps=[];
+            disp(['Epicurus run: ',num2str(run)]);
+            disp(['Epicurus iteration: ',num2str(count)]);
+
+            % TODO add budget checks
+
+            %% TEST SUITE GEN with some staliro configuration
+            staliroTimeTic=tic;
+            % TODO MAJOR TASK, see in genTestSuite.m
+            testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
+            % NOTE: testSuite will/may only contain a list of falsifying test cases 
+            staliroTime=toc(staliroTimeTic);
+
+            % Q: Did we find a counterexample?
+            % error('Iterative repair approach is not yet implemented.');
+
+            %% FIND REPAIR
+            repairTimeTic=tic;
+            % TODO MAJOR TASK, see in findRepair.m
+            bestRepair = findRepair(modelname, phi, preds, testSuite, yassou_opt);
+            repairTime = toc(repairTimeTic);
+            error('Completeness check is not yet implemented.');
+
+            %% CHECK COMPLETENESS. FIX IF NOT COMPLETE
+            completenessCheckTimeTic=tic;
+            % TODO MAJOR TASK, see in checkAndFixCompleteness.m
+            completenessCheck = checkAndFixCompleteness(); % TODO: implement this function
+            completenessCheckTime=toc(completenessCheckTimeTic);
+
+            % while we have not reached the budget
+            % apply repair, regenrate fitness functions
+
+
+        elseif strcmp(yassou_opt.overallApproach, 'direct')
+            error('Direct repair approach is not yet implemented.');
+        elseif strcmp(yassou_opt.overallApproach, 'epicurus')
+
+            % Add to operation list
+            for ind = 1:length(epicurus_add_to_oplist)
+                var_name = epicurus_add_to_oplist{ind};
+                state.oplist(end+1, :) = state.oplist(end, :); % Shift the last element by one
+                state.oplist(end-1, :) = {var_name, [0], {{''}, {''}}, 'aexp'};... % Add to before-last index
+            end
+            % disp(state.oplist);
+
+            % TODO: this is working, but needs cleanup
+            epicurus(modelname,property,init_cond, phi, preds, sim_time,input_names,categorical,input_range,yassou_opt,gp_epicurus_opt,scriptname,resultfilename,algorithmFolder,state);
+
+        else
+            error('Invalid repair approach specified.');
+
+
+    end
+
 
 
 end
+
+
+
 
 
 
