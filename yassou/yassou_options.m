@@ -21,6 +21,11 @@ classdef yassou_options < epicurus_options
         repairMethod = 'none'; % 'none' | 'epicurus' | 'yassou'
         reqIdToRepair = -1; % ID of the requirement to repair. If -1, repair all of them 
 
+        testSuiteLoadPath = ''; % Load test suite from file
+        testSuiteSavePath = ''; % Save test suite to file
+        % Extending epicurus_options
+        GPalgorithm = 'GP'; % 'RS','GP'
+
 
     end
 

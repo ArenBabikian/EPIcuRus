@@ -4,11 +4,6 @@ function yassou(modelname, modeldatapath, rt_data, yassou_opt, gp_epicurus_opt, 
 % Coming from epicurus.m
 % global hFeatures;
 
-%% Setup environment
-% TODO: move this much earlier
-
-% [resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
-
 %% Prepare Yassou
 input_names = {rt_data.inputs.name};
 input_types = {rt_data.inputs.type};
@@ -39,8 +34,12 @@ categorical = []; % TODO: what is this?
 
 policy='UR'; % Standard policy
 sim_time=1; % QUESTION: what is this?
-learningMethod='GP'; %"GP", "DT"
-GPalgorithm='GP'; % 'RS','GP'
+
+%% Setup environment
+% TODO: move this much earlier
+
+% [resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,GPalgorithm);
+[resultfilename, scriptname, algorithmFolder] = prepResultsFolder(modelname,property,policy,yassou_opt.GPalgorithm);
 
 % originalqctPath=fullfile(fileparts(which([scriptname,'original.qct'])),[scriptname,'original.qct']);
 
@@ -180,24 +179,11 @@ for i = startId:endId
 
             % TODO add budget checks
 
-            % Read from the file if it exists            
-            testsuite_filename = sprintf('testSuite_req%d_run%d.mat', i, run);
-            if exist(testsuite_filename, 'file')
-                load(testsuite_filename, 'testSuite');
-                disp(['Loaded test suite from ', testsuite_filename]);
-            else
-
             %% TEST SUITE GEN with some staliro configuration
             staliroTimeTic=tic;
-            % TODO MAJOR TASK, see in genTestSuite.m
             testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
             % NOTE: testSuite will/may only contain a list of falsifying test cases 
             staliroTime=toc(staliroTimeTic);
-
-            % Save the generated test suite to a file
-            save(testsuite_filename, 'testSuite');
-            disp(['Test suite saved to ', testsuite_filename]);
-            end
 
 
             % Q: Did we find a counterexample?

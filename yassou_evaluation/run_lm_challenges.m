@@ -43,6 +43,9 @@ yassou_opt.overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
 yassou_opt.repairMethod = 'todo';
 yassou_opt.reqIdToRepair = 1; % ID of the requirement to repair. If -1, repair all of them
 
+yassou_opt.testSuiteLoadPath = 'testSuite_yassou.mat';
+yassou_opt.testSuiteSavePath = 'testSuite_yassou.mat';
+
 % Run Config options
 yassou_opt.runsStartId = 1; % Start ID for runs
 yassou_opt.runsEndId = 2;   % End ID for runs
@@ -91,7 +94,8 @@ yassou_opt.desiredFitness=0;
 yassou_opt.exploit=0;
 yassou_opt.epsilon=10;
 yassou_opt.qvtraceenabled=false;
-yassou_opt.learningMethod='DT'; %"GP", "DT"
+yassou_opt.learningMethod='GP'; %"GP", "DT"
+yassou_opt.GPalgorithm='GP'; % 'RS','GP'
 
 % ARCHIVE. For when i was running with HECATE examples
 % if ~strcmp(model, 'demo')
