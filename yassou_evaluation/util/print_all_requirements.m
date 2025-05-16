@@ -2,9 +2,11 @@
 % in all subfolders of 'Yasuo Slash Eleanor challenges RT'
 % Writes all results to a single CSV file
 
+cd(fileparts(mfilename('fullpath')));
+cd('..');
 rootDir = 'LM_Challenges_rt';
 filePattern = '**/*v1.rt'; % Recursive search for files ending with 'V1'
-outputFile = 'all_reqdef_blocks.csv'; % Output file in current directory
+outputFile = '.output/all_reqdef_blocks.csv'; % Output file in current directory
 
 files = dir(fullfile(rootDir, filePattern));
 allRows = {}; % Collect all rows from all files
@@ -46,7 +48,7 @@ if ~isempty(allRows)
     % Pad rows with fewer columns
     paddedRows = cellfun(@(x) [x, repmat({''}, 1, maxCols-numel(x))], allRows, 'UniformOutput', false);
     T = cell2table(vertcat(paddedRows{:}));
-    writetable(T, outputFile, 'WriteVariableNames', false);
+    writetable(T, fullfile(outputFile), 'WriteVariableNames', false);
     fprintf('Written all reqdef blocks to %s\n', outputFile);
 else
     fprintf('No reqdef blocks found in any file.\n');

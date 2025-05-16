@@ -32,7 +32,7 @@ function [agg_fit_compliance, fit_size] = get_repair_heuristic(modelname, indiv,
         %% Run Simulation or Load Precomputed Trace
         % NOTE: this is a quick solution. Think about this more carefullys
         % TODO do this withoutan external file?
-        save_filename = sprintf('yassou_evaluation/temp/hs_%d.mat', i);
+        save_filename = sprintf('yassou_evaluation/.temp/hs_%d.mat', i);
         if exist(save_filename, 'file')
             loaded_data = load(save_filename, 'hs');
             hs = loaded_data.hs;

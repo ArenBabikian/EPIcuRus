@@ -101,30 +101,48 @@ for i = startId:endId
 
     % MAJOR QUESTIONS:
     % (1) How to integrate preconditions (boolean constraints over the inputs)?
-        % From Federico: Look at Q3.
+        % >> Federico: Look at Q3.
+        % >> Aren: Now that I reread the question, I realise it is a bit unclear.
+        % My question was more about how to integrate the preconditions in general into the
+        % S-Taliro framework. From my understaning, S-Taliro only takes a condition/predicate
+        % over model outputs (i.e. a post-condition) and finds test cases that falsifies it.
+        % We cannot integrate conditions over imodel inputs into S-Taliro.
+        % But I might be missing something.
     % (2) How to transform the postcondition into a phi and a set of predicates?
         % ANSWER: this will be done manually for now.
     % (3) How to support systems that have both real and boolean inputs and outputs?
-        % From Federico: the quick and dirty answer is that we turn them in two
+        % >> Federico: the quick and dirty answer is that we turn them in two
         % inequalities:
         % a == true ===> (a <= 1) & (a >= 1)
         % Since the equal is always included, these are equivalent and we
         % pretend that the boolean variable is a real variable. Otherwise, it
         % get's a bit harder to make the code run.
+        % >> Aren: Sounds good, at least for a first attempt. But in the medium-term,
+        % I do envision some performance issues with this, but we can discuss in the future.
     % (4) How to support quadratic requirements?
-        % From Federico: Non-linear requirements are not supported by dp-taliro
+        % >> Federico: Non-linear requirements are not supported by dp-taliro
         % (the main trace-checker for S-Taliro). I believe they should be
         % supported by the Hecate trace checker, but I haven't tested it
         % thoroughly.
+        % >> Aren: Okay. only 2/10 Lockheed-Martin case studies have quadratic
+        % requirements. So it should be okay.
     % (5) Where do we get the input bounds (aside from the preconditions)?
-        % From Federico: we could assume that the user specifies the input
+        % >> Federico: we could assume that the user specifies the input
         % range in the Assumption tab of the Requirements Table. We briefly
         % considered it for Hecate, but then decided against since the Test
         % Sequence block gives more freedom in designing the signals.
+        % >> Aren: Ya. it will probably take some experimentation to get good
+        % boundaries for each model. But some of this can probably be simplified
+        % by analysing the requirement preconditions.
     % (6) How to correctly set up the staliro integration (in genTestSuite.m)?
-        % From Federico: Is there a specific problem here that you are worried
+        % >> Federico: Is there a specific problem here that you are worried
         % about? The hardest part seems to be converting the requirements, but
         % that should be already handled.
+        % >> Aren: My question was more about finding good parameters to actually get
+        % staliro to generate good test cases. We can start with some default
+        % parameters, but we might need to tweak them later.
+    % (7) Do we want to use a newer version of S-Taliro?
+        % >> Aren: what do you think, Federico? This does sound like a lot of work.
 
     % TASK:
     % (1) Feed the preconditions, 'phi', 'preds', 'input_range', ... into STaliro (see genTestSuite.m)

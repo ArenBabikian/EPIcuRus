@@ -43,8 +43,8 @@ yassou_opt.overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
 yassou_opt.repairMethod = 'todo';
 yassou_opt.reqIdToRepair = 1; % ID of the requirement to repair. If -1, repair all of them
 
-yassou_opt.testSuiteLoadPath = 'testSuite_yassou.mat';
-yassou_opt.testSuiteSavePath = 'testSuite_yassou.mat';
+yassou_opt.testSuiteLoadPath = 'yassou_evaluation/.testsuites/testSuite_yassou.mat';
+yassou_opt.testSuiteSavePath = 'yassou_evaluation/.testsuites/testSuite_yassou.mat';
 
 % Run Config options
 yassou_opt.runsStartId = 1; % Start ID for runs
