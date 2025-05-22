@@ -108,6 +108,13 @@ for i = startId:endId
         % over model outputs (i.e. a post-condition) and finds test cases that falsifies it.
         % We cannot integrate conditions over imodel inputs into S-Taliro.
         % But I might be missing something.
+        % >> Federico: I see two issues for this:
+            % 1 - Add outports to the input signals, so that the dp_taliro
+            % tool can see them.
+            % 2 - Write the actual predicate in a "[] (pre -> post)"
+            % format.
+        % It might get tricky if the Requirements Table uses Duration, t
+        % and et, but I don't see them as impossible.
     % (2) How to transform the postcondition into a phi and a set of predicates?
         % ANSWER: this will be done manually for now.
     % (3) How to support systems that have both real and boolean inputs and outputs?
