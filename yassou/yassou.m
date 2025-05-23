@@ -5,6 +5,7 @@ function yassou(modelname, modeldatapath, rt_data, yassou_opt, gp_epicurus_opt, 
 % global hFeatures;
 
 %% Prepare Yassou
+% Add input type and name
 input_names = {rt_data.inputs.name};
 input_types = {rt_data.inputs.type};
 
@@ -28,12 +29,16 @@ epicurus_add_to_oplist = input_names;
 % error('a');
 
 % NOTE: STALIRO Options - Unsure about these
-activeScenarioTS = ''; % TODO: what is this?
+activeScenarioTS = '';  % TODO: what is this?
+                        % >> Federico: Name of the scenario for the Test
+                        % Sequence block, it can probably be removed.
 property = 'R'; % TODO: what is this?
-categorical = []; % TODO: what is this?
+categorical = [];   % TODO: what is this?
 
-policy='UR'; % Standard policy
-sim_time=1; % QUESTION: what is this?
+policy = 'UR'; % Standard policy
+sim_time = 1; % QUESTION: what is this?
+            % >> Federico: This is the simulation time, it should match
+            % what is in the "Stop Time" field in the Simulink model.
 
 %% Setup environment
 % TODO: move this much earlier
@@ -84,6 +89,7 @@ end
     % needed by the Simulink model, so she is loading all the variables in
     % the base workspace. This should be equivalent to:
     % evalin('base','load("demo.mat");');
+    % I would move this to the main, since not all models have a .mat file.
 cmd = load('-mat', modeldatapath);
 vars = fieldnames(cmd);
 for i = 1:length(vars)
@@ -156,24 +162,20 @@ for i = startId:endId
     % (2) get a set of falsifying and non-falsifying test cases
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% Extract the requirement of interest
-    req = rt_data.requirements(i);
-    precondition = req.precondition;
-    phi = req.phi;
-    preds = req.preds;
+    % %% Extract the requirement of interest
+    % req = rt_data.requirements(i);
+    % precondition = req.precondition;
+    % phi = req.phi;
+    % preds = req.preds;
     % input_range = rt_data.input_range;
 
     %% Set up the Test suite Generation
     
-    % set up the interpolation function: it is either const or pconst
-    nControlPoints=yassou_opt.nbrControlPoints;
-    if (nControlPoints==1) 
-        interpolation_type='const';
-    else
-        interpolation_type='pconst';
-    end
 
     numberOfInputs=size(input_names,2); % the number of inputs 
+        % >> Federico: This constraints the control points number so that
+        % they are the same for all signals.
+    nControlPoints=yassou_opt.nbrControlPoints;
     cp_array=nControlPoints*ones(1,numberOfInputs); % the vector contains the number of control points of each input
 
     % categorical and cp_names in terms of control points.
@@ -183,10 +185,9 @@ for i = startId:endId
     % kmax=(sim_time/assume_opt.SampTime);
 
     %% Begin running Yassou
-    for run=yassou_opt.runsStartId:yassou_opt.runsEndId
+    for runNbr=yassou_opt.runsStartId:yassou_opt.runsEndId
 
         if strcmp(yassou_opt.overallApproach, 'iterative')
-
             %% Set up the S-Taliro options
 
             % From epicurus.m
@@ -199,14 +200,14 @@ for i = startId:endId
             assumption=''; % the best assumption of the GP
             iteration_idx_with_fitness_jumps=[];
             iteration_idx_with_no_fitness_jumps=[];
-            disp(['Epicurus run: ',num2str(run)]);
+            disp(['Epicurus run: ',num2str(runNbr)]);
             disp(['Epicurus iteration: ',num2str(count)]);
 
             % TODO add budget checks
 
             %% TEST SUITE GEN with some staliro configuration
             staliroTimeTic=tic;
-            testSuite = genTestSuite(modelname,init_cond, phi, preds, sim_time,Oldt,input_range,interpolation_type,cp_array,cp_names,'temp',categorical,count,yassou_opt); % TODO: implement this function
+            testSuite = genTestSuite(modelname, init_cond, rt_data, sim_time, Oldt, input_range, cp_array, cp_names, categorical, count, yassou_opt); % TODO: implement this function
             % NOTE: testSuite will/may only contain a list of falsifying test cases 
             staliroTime=toc(staliroTimeTic);
 
@@ -250,11 +251,11 @@ for i = startId:endId
             error('Invalid repair approach specified.');
 
 
+        end
+
+
+
     end
-
-
-
-end
 
 
 

@@ -292,7 +292,7 @@
 % Copyright © [2020] – [2021] University of Luxembourg.
 
 function [results, history, opt] ...
-    = staliro(model, init_cond, input_range, cp_array, phi, preds, TotSimTime, opt,Oldt,controlPointNames,categorical,count)
+    = staliro(model, init_cond, input_range, cp_array, phi, preds, TotSimTime, opt, Oldt, controlPointNames, categorical, count)
 
 %% global declarations
 

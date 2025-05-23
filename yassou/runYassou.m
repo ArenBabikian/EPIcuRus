@@ -1,4 +1,4 @@
-function runyassou(model)
+function runYassou(model)
 
 %% Setup the environment
 
@@ -6,13 +6,17 @@ function runyassou(model)
 % setenv('PATH', '/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin')
 close all;
 % clear;
-addpath(genpath("C:\git\EPIcuRus"));
-cd('C:\git\EPIcuRus');
+% addpath(genpath("C:\git\EPIcuRus"));
+addpath(genpath("staliro"))
+addpath(genpath("yassou"))
+addpath(genpath("EpicurusMain"))
+addpath("DTutils")
+% cd('C:\git\EPIcuRus');
 
 
 % Default values for parameters
 if nargin < 1 || isempty(model), model = 'Observer_mode_model9'; end
-reqTable = 'RequirementsTable';
+reqTable = "EpicurusMain" + filesep + "Tutorial" + filesep + "demo.mat";
 
 % % Define folder name based on model name
 % if strcmp(modelname, 'demo')
@@ -152,8 +156,14 @@ if  epicurus_opt.qvtraceenabled==1
     disp('Model loaded');
 end
 
+% Load requirements from .m file
+reqFile = "demo_v1";
+reqPath = "yassou_evaluation" + filesep + "lm_challenges_json";
+addpath(reqPath)
+eval(sprintf("reqStruct = %s;",reqFile))
+
 %% Run Yassou
-yassou(model, reqTable, yassou_opt, epicurus_opt, gp_epicurus_opt, state);
+yassou(model, reqTable, reqStruct, yassou_opt, gp_epicurus_opt, state);
 % epicurus(model,property,init_cond, phi, preds, sim_time,input_names,categorical,input_range,epicurus_opt,gp_epicurus_opt,scriptname,resultfilename,algorithmFolder,state);
 disp('############################################################################');
 disp(['Yassou finished running and results are saved under: ',algorithmFolder]);
