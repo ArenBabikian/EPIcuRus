@@ -1,27 +1,33 @@
-function runyassou(casestudyid)
+function run_lm_challenges(casestudyid)
 
 %% Set up the Environment
 
 close all;
 clearvars -except casestudyid;
-addpath(genpath("C:\git\EPIcuRus"));
-cd('C:\git\EPIcuRus');
+addpath(genpath("staliro"))
+addpath(genpath("yassou"))
+addpath(genpath("EpicurusMain"))
+addpath("DTutils")
+addpath("yassou_evaluation" + filesep + "lm_challenges_json")
+% addpath(genpath("C:\git\EPIcuRus"));
+% cd('C:\git\EPIcuRus');
 
 %% Get case study
 
-modelsFolder = "yassou_evaluation/lm_challenges/original_models";
-% RTsFolder = "yassou_evaluation\LM_Challenges_rt";
-% dataFolder = "yassou_evaluation\lm_challenges_json";
+modelsFolder = "yassou_evaluation" + filesep + "lm_challenges" + filesep + "original_models";
+% RTsFolder = "yassou_evaluation" + filesep + "LM_Challenges_rt";
+% dataFolder = "yassou_evaluation" + filesep + "lm_challenges_json";
 
 switch casestudyid
     case 'demo'
         model = 'demo';
-        modelDataPath = fullfile('EpicurusMain/Tutorial/demo.mat');
+        modelDataPath = fullfile("EpicurusMain","Tutorial","demo.mat");
         rt_file = "demo_v1";
     case 'NN'
         % model = modelsFolder + "\FRET_CoCoSim\7_autopilot\ap_12B.slx";
+        addpath(modelsFolder + filesep +  "5_nn")
         model = 'nn_12B';
-        modelDataPath = fullfile(modelsFolder, '5_nn', [model '_data.mat']);
+        modelDataPath = fullfile(modelsFolder, "5_nn", model + "_data.mat");
         rt_file = "NN_v1";
     otherwise
         error('Unknown case study ID');
@@ -30,7 +36,7 @@ end
 rt_data = feval(rt_file);
 
 disp('##################################################');
-disp(['Running Yassou on the ', casestudyid, ' case study'])
+disp("Running Yassou on the " + casestudyid + " case study")
 disp('##################################################');
 
 %% Set up Yassou options
@@ -43,8 +49,8 @@ yassou_opt.overallApproach = 'iterative'; % 'iterative' | 'direct' | 'epicurus'
 yassou_opt.repairMethod = 'todo';
 yassou_opt.reqIdToRepair = 1; % ID of the requirement to repair. If -1, repair all of them
 
-yassou_opt.testSuiteLoadPath = 'yassou_evaluation/.testsuites/testSuite_yassou.mat';
-yassou_opt.testSuiteSavePath = 'yassou_evaluation/.testsuites/testSuite_yassou.mat';
+yassou_opt.testSuiteLoadPath = "yassou_evaluation" + filesep + "testSuite_yassou.mat";
+yassou_opt.testSuiteSavePath = "yassou_evaluation" + filesep + "testSuite_yassou.mat";
 
 % Run Config options
 yassou_opt.runsStartId = 1; % Start ID for runs
@@ -57,8 +63,6 @@ yassou_opt.nbrControlPoints=3;
 yassou_opt.runs=1; % number of staliro iterations. This is hard-coded to 1 in [genSuite.m:168]
 yassou_opt.testSuiteSize=50; % number of test cases per staliro iteration (defaults to larger of the 2)
 yassou_opt.iteration1Size=50; % number of test cases in the first iteration (defaults to larger of the 2)
-
-
 
 % staliro native options
 yassou_opt.dispinfo=100;
